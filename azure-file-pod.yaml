@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+ name: sqlserver
+ labels:
+   app: sqlserver
+spec:
+ tolerations:
+ - key: "node.kubernetes.io/os"
+   operator: "Equal"
+   value: "win1809"
+   effect: "NoSchedule"
+ nodeSelector:
+   beta.kubernetes.io/os: windows
+ containers:
+ - name: sqlpod
+   image: ddebroy/sqlsrv:latest
+   volumeMounts:
+   - name: azurevol
+     mountPath: C:\Data
+   env:
+   - name: ACCEPT_EULA
+     value: "y"
+   - name: sa_password
+     value: "Tester123"
+ volumes:
+   - name: azurevol
+     persistentVolumeClaim:
+       claimName: azurefile
